@@ -2,6 +2,8 @@ const { assert } = require('chai');
 const signaturePromise = require('./signaturePromise');
 const { utils } = require('ethers');
 
+global.console = require('console');
+
 describe('signaturePromise', () => {
     it('should be an instance of Promise', () => {
         assert(signaturePromise instanceof Promise);
