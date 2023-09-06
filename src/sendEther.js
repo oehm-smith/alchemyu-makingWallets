@@ -17,6 +17,7 @@ async function sendEther({ value, to }) {
     //     gasPrice: 0x3b9aca00
     // });
 
+    // BTW this isn't working - something wrong with the ganache provider and can't easily work it out
     return wallet.sendTransaction({
         value, to,
         gasLimit: 0x5208,
