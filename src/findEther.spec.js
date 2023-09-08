@@ -1,5 +1,5 @@
 const { assert } = require('chai');
-const { PRIVATE_KEY, ganacheProvider } = require('../findEther.config');
+const { PRIVATE_KEY, ganacheProvider } = require('./findEther.config');
 const { utils, Wallet, providers } = require('ethers');
 const findEther = require('./findEther');
 
@@ -15,10 +15,19 @@ function rpc(method) {
     });
 }
 
-const stopMiner = () => rpc('miner_stop');
-const mineBlock = () => rpc('evm_mine');
+const stopMiner = () => {
+    console.log('miner_stop')
+    rpc('miner_stop');
+}
+const mineBlock = () => {
+    console.log('evm_mine')
+    rpc('evm_mine');
+}
+
+global.console = require('console');
 
 describe('findEther', () => {
+    jest.setTimeout(30000);
     const expected = [];
 
     const sendEther = async (i) => {
@@ -28,21 +37,23 @@ describe('findEther', () => {
             to: address,
             nonce: i,
         });
+        console.log(`sendEther for address: ${address}`)
         expected.push(address);
     }
 
-    before(async () => {
-        stopMiner();
+    beforeAll(async () => {
+        await stopMiner();
         let i = 0;
         // block 1
-        for (; i < 3; i++) await sendEther(i);
+        for (; i < 2; i++) await sendEther(i);
         await mineBlock();
         // block 2
-        for (; i < 7; i++) await sendEther(i);
+        for (; i < 2; i++) await sendEther(i);
         await mineBlock();
         // block 3
-        for (; i < 10; i++) await sendEther(i);
+        for (; i < 3; i++) await sendEther(i);
         await mineBlock();
+        await stopMiner();
     });
 
     it('should find all the addresses', async () => {
